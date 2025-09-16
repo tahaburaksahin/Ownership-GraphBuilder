@@ -1,0 +1,62 @@
+
+import json
+import sys
+import networkx as nx
+import matplotlib.pyplot as plt
+
+def build_graph(relations):
+    """
+    relations: list of dicts like:
+    {"owner": "Company A", "owned": "Company B", "pct": 75}
+    """
+    G = nx.DiGraph()
+    for r in relations:
+        owner = r['owner']
+        owned = r['owned']
+        pct = r.get('pct', None)
+        G.add_node(owner)
+        G.add_node(owned)
+        G.add_edge(owner, owned, pct=pct)
+    return G
+
+def draw_graph(G, output='ownership.png'):
+    pos = nx.spring_layout(G, k=0.6, seed=42)
+    plt.figure(figsize=(10, 8))
+    nx.draw_networkx_nodes(G, pos, node_size=1500)
+    nx.draw_networkx_labels(G, pos, font_size=10)
+    nx.draw_networkx_edges(G, pos, arrows=True, arrowstyle='->', arrowsize=20)
+    # edge labels show percentages if available
+    edge_labels = {}
+    for u,v,data in G.edges(data=True):
+        if data.get('pct') is not None:
+            edge_labels[(u,v)] = f"{data['pct']}%"
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='red')
+    plt.axis('off')
+    plt.title("Ownership Graph")
+    plt.tight_layout()
+    plt.savefig(output, dpi=150)
+    print(f"Saved graph to {output}")
+
+def sample_usage():
+    relations = [
+        {"owner":"Alpha Holding", "owned":"Beta Ltd", "pct":60},
+        {"owner":"Beta Ltd", "owned":"Gamma A.S.", "pct":50},
+        {"owner":"Alpha Holding", "owned":"Delta S.A.", "pct":100},
+        {"owner":"Epsilon GmbH", "owned":"Gamma A.S.", "pct":20}
+    ]
+    G = build_graph(relations)
+    draw_graph(G, output='sample_ownership.png')
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2 and sys.argv[1] == '--sample':
+        sample_usage()
+    elif len(sys.argv) == 2:
+        # treat argument as json file path
+        with open(sys.argv[1], 'r', encoding='utf-8') as f:
+            relations = json.load(f)
+        G = build_graph(relations)
+        draw_graph(G, output='ownership_from_input.png')
+    else:
+        print("Usage:")
+        print("  python ownership_graph_builder.py --sample")
+        print("  python ownership_graph_builder.py relations.json")
