@@ -1,2 +1,23 @@
-# Ownership-GraphBuilder
-Ownership Graph Builder — Developed a Python tool that models and visualizes company ownership structures as directed graphs. The tool consumes JSON ownership records (e.g., “Company A owns 60% of Company B”) and generates clear, annotated network graphs showing parent companies, subsidiaries, and control percentages.
+# 🔗 Ownership Graph Builder
+
+**Ownership Graph Builder** is a Python-based tool to model and visualize company ownership structures as directed graphs.  
+It is useful for analyzing complex corporate hierarchies, parent-subsidiary relationships, and control chains.
+
+---
+
+## ✨ Features
+
+- Build **directed ownership graphs** from JSON records  
+- Annotate edges with **ownership percentages**  
+- Export clear, publication-ready diagrams as PNG  
+- Sample dataset included for quick testing  
+- Built using **NetworkX** + **Matplotlib**  
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-username/ownership-graph-builder.git
+cd ownership-graph-builder
